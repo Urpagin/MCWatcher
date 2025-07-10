@@ -2,5 +2,17 @@
 name = "mc_watcher"
 version = "0.1.0"
 edition = "2024"
+license = "GPL-3.0"
+description = "Watches and pings a Minecraft server, exposing status endpoints."
 
 [dependencies]
+# Always needed, including production
+mcping = { version = "0.2.0", default-features = false }
+dotenv = "0.15.0"
+
+[profile.release]
+opt-level      = "z"       # good size/speed trade‑off
+lto            = "fat"     # link‑time optimisation
+codegen-units  = 1          # better optimisation; slower compile
+strip          = "symbols" # remove symbol table
+panic          = "abort"   # smaller binary
