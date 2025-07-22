@@ -320,3 +320,6 @@ flake.lock
 #/target
 
 *.csv
+
+.venv/
+.idea/
