@@ -1,0 +1,7 @@
+services:
+  frontend:
+    image: example/webapp
+    build: .
+    restart: unless-stopped
+
+
