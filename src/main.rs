@@ -69,18 +69,15 @@ impl McInfo {
 }
 
 /// Line contains a \n at the end!
-fn update_file(line: String) -> Result<(), std::io::Error> {
-    let mut data_file = OpenOptions::new()
-        .append(true)
-        .create(true)
-        .open("data.csv")?;
+fn update_file(file: &str, line: String) -> Result<(), std::io::Error> {
+    let mut data_file = OpenOptions::new().append(true).create(true).open(file)?;
 
     data_file.write(line.as_bytes()).map(drop)?;
 
     Ok(())
 }
 
-fn probe(addr: &str) -> Result<(), Box<dyn Error>> {
+fn probe(file: &str, addr: &str) -> Result<(), Box<dyn Error>> {
     let tmsp_probed: u64 = SystemTime::now().duration_since(UNIX_EPOCH)?.as_secs();
     let (latency, status) = mcping::get_status(&addr, Duration::from_secs(10))?;
 
@@ -94,7 +91,7 @@ fn probe(addr: &str) -> Result<(), Box<dyn Error>> {
         status.players.sample,
     );
 
-    update_file(format!("{}\n", info.make_csv_line()))?;
+    update_file(file, format!("{}\n", info.make_csv_line()))?;
 
     Ok(())
 }
@@ -103,14 +100,15 @@ const PROBING_INTERVAL_SECONDS: u64 = 30;
 
 fn main() -> Result<(), mcping::Error> {
     dotenv().ok();
-    let addr = env::var("MC_ADDR").expect("Failed to read addr from env");
+    let addr = env::var("MC_ADDR").expect("Failed to read 'MC_ADDR' from env");
+    let data_path = env::var("DATA_PATH").unwrap_or_else(|_| "./data.csv".to_string());
 
     let mut cycles: usize = 0;
     let mut successes: usize = 0;
     let mut errors: usize = 0;
 
     loop {
-        if let Err(e) = probe(&addr) {
+        if let Err(e) = probe(&data_path, &addr) {
             eprintln!("Error caught: {e}");
             errors += 1;
         } else {

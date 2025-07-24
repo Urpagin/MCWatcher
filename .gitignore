@@ -323,3 +323,4 @@ flake.lock
 
 .venv/
 .idea/
+./data/

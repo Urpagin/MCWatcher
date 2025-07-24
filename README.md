@@ -6,6 +6,9 @@ Probes a Minecraft server at regular intervals to collect comprehensive data for
 
 1. Set the `MC_ADDR` environment variable in a `.env` file at the root of the project as follows:
 
+> [!TIP]
+> Copy-paste the `.env.example` file into a `.env` file and modify the content of the latter.
+
 ```bash
 MC_ADDR=mc.hypixel.net
 ```
@@ -17,6 +20,23 @@ cargo run
 ```
 
 Allow the program to probe the server. Once sufficient data has been collected, stop the program and interpret the results in the generated `data.csv` file.
+
+## Docker Compose
+
+1. Populate the `.env` file just as described in the [Quickstart](#quickstart) heading
+
+
+2. Launch the program
+```bash
+docker compose up -d
+```
+
+3. All done. A `./data/` directory will be made with the `data.csv` inside. To interactively inspect the logs of the container, do:
+```bash
+docker compose logs -f
+```
+
+## Data format
 
 The `data.csv` file is appended every 30 seconds and structured as follows:
 

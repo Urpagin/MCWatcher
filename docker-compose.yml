@@ -1,7 +1,11 @@
 services:
-  frontend:
-    image: example/webapp
+  mc_watcher:
+    container_name: mc-watcher
+    #image: mc-watcher/urpagin
     build: .
     restart: unless-stopped
-
-
+    env_file: './.env'
+    volumes:
+      - ./data/:/data/
+    environment:
+      DATA_PATH: "/data/data.csv"
